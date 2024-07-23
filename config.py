@@ -1,6 +1,6 @@
 from os import getenv
 
-ENV = False
+ENV = True
 
 if ENV:
     TOKEN1 = getenv("TOKEN1")
@@ -10,8 +10,8 @@ if ENV:
     TOKEN5 = getenv("TOKEN5")
     SUDO = list(map(int, getenv("SUDO").split(" ")))
 else:
-    TOKEN1 = "7005246721:AAFPGY9-BsuZR1a6noaRJyQBqrrFwZTEMyI"
-    TOKEN2 = "7005246721:AAFPGY9-BsuZR1a6noaRJyQBqrrFwZTEMyI"
+    TOKEN1 = ""
+    TOKEN2 = ""
     TOKEN3 = ""
     TOKEN4 = ""
     TOKEN5 = ""
