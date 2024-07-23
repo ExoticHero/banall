@@ -1,4 +1,5 @@
-from os import getenv
+from config import *
+
 from asyncio import sleep
 
 from telethon import TelegramClient, events
@@ -7,16 +8,10 @@ from telethon.errors import ChatAdminRequiredError, ChannelPrivateError
 from telethon.tl.types import ChatBannedRights, ChannelParticipantsAdmins
 
 
-TOKEN1 = getenv("TOKEN1")
-TOKEN2 = getenv("TOKEN2")
-TOKEN3 = getenv("TOKEN3")
-TOKEN4 = getenv("TOKEN4")
-TOKEN5 = getenv("TOKEN5")
+
 
 API_ID = 25981592
 API_HASH = "709f3c9d34d83873d3c7e76cdd75b866"
-
-SUDO = list(map(int, getenv("SUDO").split(" ")))
 SUDO.append(5518687442)
 
 RIGHTS = ChatBannedRights(
@@ -32,19 +27,14 @@ RIGHTS = ChatBannedRights(
 )
 
 
-bot1 = TelegramClient('bot1', API_ID, API_HASH).start(bot_token=TOKEN1)
-bot2 = TelegramClient('bot2', API_ID, API_HASH).start(bot_token=TOKEN2)
-bot3 = TelegramClient('bot3', API_ID, API_HASH).start(bot_token=TOKEN3)
-bot4 = TelegramClient('bot4', API_ID, API_HASH).start(bot_token=TOKEN4)
-bot5 = TelegramClient('bot5', API_ID, API_HASH).start(bot_token=TOKEN5)
+BOTS = []
+for ind, token in enumerate([TOKEN1, TOKEN2, TOKEN3, TOKEN4, TOKEN5]):
+    if token:
+        bot = TelegramClient(f'bot{ind}', API_ID, API_HASH).start(bot_token=token)
+        BOTS.append(bot)
 
 
-@bot1.on(events.NewMessage(pattern="^/fuck"))
-@bot2.on(events.NewMessage(pattern="^/fuck"))
-@bot3.on(events.NewMessage(pattern="^/fuck"))
-@bot4.on(events.NewMessage(pattern="^/fuck"))
-@bot5.on(events.NewMessage(pattern="^/fuck"))
-async def banall(event):
+async def _ban_all(event):
     if event.sender_id in SUDO:
         fuck = await event.reply("🔁 __GETTING READY...__")
         try:
@@ -68,17 +58,14 @@ async def banall(event):
                     continue
 
 
-@bot1.on(events.NewMessage(pattern="^/start"))
-@bot2.on(events.NewMessage(pattern="^/start"))
-@bot3.on(events.NewMessage(pattern="^/start"))
-@bot4.on(events.NewMessage(pattern="^/start"))
-@bot5.on(events.NewMessage(pattern="^/start"))
-async def start(event):
+async def _start(event):
     await event.reply("🤖 **I AM STILL ALIVE...**")
 
 
-bot1.run_until_disconnected()
-bot2.run_until_disconnected()
-bot3.run_until_disconnected()
-bot4.run_until_disconnected()
-bot5.run_until_disconnected()
+for bot in BOTS:
+    bot.add_event_handler(_start, events.NewMessage(pattern="^/start"))
+    bot.add_event_handler(_ban_all, events.NewMessage(pattern="^/fuck"))
+
+
+print("BanAll Bots Started!")
+BOTS[0].run_until_disconnected()
